@@ -2,36 +2,14 @@
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, Download, Image as ImageIcon, Settings, Palette } from 'lucide-react';
+import { Upload, Download, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-interface PresetFormat {
-  name: string;
-  width: number;
-  height: number;
-  description: string;
-}
 
 const SVGConverter = () => {
   const [svgFile, setSvgFile] = useState<File | null>(null);
   const [svgContent, setSvgContent] = useState<string>('');
-  const [selectedFormat, setSelectedFormat] = useState<string>('custom');
-  const [customWidth, setCustomWidth] = useState<number>(1080);
-  const [customHeight, setCustomHeight] = useState<number>(1080);
-  const [backgroundColor, setBackgroundColor] = useState<string>('#000000');
-  const [svgColor, setSvgColor] = useState<string>('#ffffff');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-
-  const presetFormats: PresetFormat[] = [
-    { name: 'Instagram Square', width: 1080, height: 1080, description: 'Perfect for Instagram posts' },
-    { name: 'Instagram Story', width: 1080, height: 1920, description: 'Vertical Instagram stories' },
-    { name: 'Twitter Post', width: 1200, height: 675, description: 'Twitter image posts' },
-    { name: 'LinkedIn Post', width: 1200, height: 627, description: 'LinkedIn social posts' },
-    { name: 'Facebook Cover', width: 1200, height: 630, description: 'Facebook cover photos' },
-    { name: 'YouTube Thumbnail', width: 1280, height: 720, description: 'YouTube video thumbnails' },
-  ];
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -56,14 +34,6 @@ const SVGConverter = () => {
     }
   };
 
-  const getCurrentDimensions = () => {
-    if (selectedFormat === 'custom') {
-      return { width: customWidth, height: customHeight };
-    }
-    const preset = presetFormats.find(f => f.name === selectedFormat);
-    return preset ? { width: preset.width, height: preset.height } : { width: 1080, height: 1080 };
-  };
-
   const convertToPNG = () => {
     if (!svgContent) {
       toast({
@@ -74,7 +44,8 @@ const SVGConverter = () => {
       return;
     }
 
-    const { width, height } = getCurrentDimensions();
+    const width = 1080;
+    const height = 1080;
     
     // Create a canvas
     const canvas = document.createElement('canvas');
@@ -84,20 +55,13 @@ const SVGConverter = () => {
     
     if (!ctx) return;
 
-    // Fill background
-    ctx.fillStyle = backgroundColor;
+    // Fill background with white
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
-    // Modify SVG content to change color
-    let modifiedSvgContent = svgContent;
-    if (svgColor !== '#ffffff') {
-      modifiedSvgContent = modifiedSvgContent.replace(/fill="[^"]*"/g, `fill="${svgColor}"`);
-      modifiedSvgContent = modifiedSvgContent.replace(/stroke="[^"]*"/g, `stroke="${svgColor}"`);
-    }
-
-    // Create an image from SVG
+    // Create an image from SVG (preserving original colors)
     const img = new Image();
-    const blob = new Blob([modifiedSvgContent], { type: 'image/svg+xml' });
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     
     img.onload = () => {
@@ -128,7 +92,7 @@ const SVGConverter = () => {
           const downloadUrl = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = downloadUrl;
-          a.download = `${svgFile?.name?.replace('.svg', '') || 'converted'}-${width}x${height}.png`;
+          a.download = `${svgFile?.name?.replace('.svg', '') || 'converted'}-1080x1080.png`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -136,7 +100,7 @@ const SVGConverter = () => {
           
           toast({
             title: "PNG Downloaded",
-            description: `Your PNG file (${width}x${height}) has been downloaded successfully.`,
+            description: `Your PNG file (1080x1080) has been downloaded successfully.`,
           });
         }
       }, 'image/png');
@@ -160,7 +124,7 @@ const SVGConverter = () => {
               <div>
                 <h2 className="text-2xl font-semibold mb-2">Upload Your SVG</h2>
                 <p className="text-muted-foreground">
-                  Upload an SVG file to convert it to PNG with custom canvas settings
+                  Upload an SVG file to convert it to a 1080x1080 PNG with white background
                 </p>
               </div>
             </div>
@@ -195,118 +159,6 @@ const SVGConverter = () => {
         </CardContent>
       </Card>
 
-      {/* Configuration Section */}
-      {svgFile && (
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Format Selection */}
-          <Card className="card-hover">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Settings className="w-5 h-5" />
-                <h3 className="text-lg font-semibold">Canvas Settings</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Format Preset</label>
-                  <Select value={selectedFormat} onValueChange={setSelectedFormat}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose a format" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="custom">Custom Size</SelectItem>
-                      {presetFormats.map((format) => (
-                        <SelectItem key={format.name} value={format.name}>
-                          {format.name} ({format.width}×{format.height})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {selectedFormat !== 'custom' && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {presetFormats.find(f => f.name === selectedFormat)?.description}
-                    </p>
-                  )}
-                </div>
-
-                {selectedFormat === 'custom' && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-sm font-medium mb-1 block">Width</label>
-                      <input
-                        type="number"
-                        value={customWidth}
-                        onChange={(e) => setCustomWidth(Number(e.target.value))}
-                        className="w-full px-3 py-2 bg-secondary border border-border rounded-md"
-                        min="1"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium mb-1 block">Height</label>
-                      <input
-                        type="number"
-                        value={customHeight}
-                        onChange={(e) => setCustomHeight(Number(e.target.value))}
-                        className="w-full px-3 py-2 bg-secondary border border-border rounded-md"
-                        min="1"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Color Customization */}
-          <Card className="card-hover">
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Palette className="w-5 h-5" />
-                <h3 className="text-lg font-semibold">Color Settings</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Background Color</label>
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="color"
-                      value={backgroundColor}
-                      onChange={(e) => setBackgroundColor(e.target.value)}
-                      className="w-12 h-10 rounded border border-border cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={backgroundColor}
-                      onChange={(e) => setBackgroundColor(e.target.value)}
-                      className="flex-1 px-3 py-2 bg-secondary border border-border rounded-md font-mono text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium mb-2 block">SVG Color</label>
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="color"
-                      value={svgColor}
-                      onChange={(e) => setSvgColor(e.target.value)}
-                      className="w-12 h-10 rounded border border-border cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={svgColor}
-                      onChange={(e) => setSvgColor(e.target.value)}
-                      className="flex-1 px-3 py-2 bg-secondary border border-border rounded-md font-mono text-sm"
-                    />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
       {/* Convert Button */}
       {svgFile && (
         <Card className="card-hover">
@@ -318,10 +170,10 @@ const SVGConverter = () => {
                 className="btn-primary px-8 py-3 text-lg"
               >
                 <Download className="w-5 h-5 mr-2" />
-                Convert to PNG ({getCurrentDimensions().width}×{getCurrentDimensions().height})
+                Convert to PNG (1080×1080)
               </Button>
               <p className="text-sm text-muted-foreground mt-3">
-                Click to convert and download your PNG file
+                Click to convert and download your PNG file with white background
               </p>
             </div>
           </CardContent>
