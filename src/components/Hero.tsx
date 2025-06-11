@@ -11,8 +11,8 @@ const Hero = () => {
     },
     {
       icon: Palette,
-      title: 'Full Customization',
-      description: 'Customize colors, backgrounds, and canvas sizes for any platform'
+      title: 'Trouble Free',
+      description: 'Get a social media ready image with a white background and your SVG inside'
     },
     {
       icon: Download,
@@ -42,13 +42,6 @@ const Hero = () => {
           colors, and aspect ratios optimized for all major social media platforms.
         </p>
         
-        <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
-          <span>✓ No signup required</span>
-          <span>•</span>
-          <span>✓ Privacy focused</span>
-          <span>•</span>
-          <span>✓ Unlimited conversions</span>
-        </div>
       </div>
 
       {/* Features Grid */}

@@ -124,7 +124,7 @@ const SVGConverter = () => {
               <div>
                 <h2 className="text-2xl font-semibold mb-2">Upload Your SVG</h2>
                 <p className="text-muted-foreground">
-                  Upload an SVG file to convert it to a 1080x1080 PNG with white background
+                  Upload an SVG file to convert it to a 1080x1080 PNG with white background.
                 </p>
               </div>
             </div>
@@ -144,14 +144,14 @@ const SVGConverter = () => {
                 <ImageIcon className="w-12 h-12 text-muted-foreground" />
                 <div>
                   <p className="text-lg font-medium">Click to upload SVG file</p>
-                  <p className="text-sm text-muted-foreground">Or drag and drop your SVG here</p>
+                  <p className="text-sm text-muted-foreground">Or drag and drop your SVG here.</p>
                 </div>
               </div>
             </div>
 
             {svgFile && (
               <div className="bg-secondary rounded-lg p-4 text-left">
-                <p className="font-medium text-green-400">✓ File uploaded: {svgFile.name}</p>
+                <p className="font-medium text-green-400">File uploaded: {svgFile.name}</p>
                 <p className="text-sm text-muted-foreground">Size: {(svgFile.size / 1024).toFixed(1)} KB</p>
               </div>
             )}
@@ -170,10 +170,10 @@ const SVGConverter = () => {
                 className="btn-primary px-8 py-3 text-lg"
               >
                 <Download className="w-5 h-5 mr-2" />
-                Convert to PNG (1080×1080)
+                Convert to PNG
               </Button>
               <p className="text-sm text-muted-foreground mt-3">
-                Click to convert and download your PNG file with white background
+                Click to convert and download your PNG file with white background.
               </p>
             </div>
           </CardContent>

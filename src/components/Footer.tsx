@@ -29,9 +29,8 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col items-center space-y-6">
           <div className="text-center">
-            <h3 className="text-lg font-semibold mb-2">Connect With Us</h3>
             <p className="text-muted-foreground">
-              Follow our journey and stay updated with the latest tools
+              Follow our journey and stay updated with the latest tools.
             </p>
           </div>
           
@@ -48,10 +47,6 @@ const Footer = () => {
                 <social.icon className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
               </a>
             ))}
-          </div>
-          
-          <div className="text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 NAUTBOL. Built with ❤️ for creators.</p>
           </div>
         </div>
       </div>
