@@ -1,8 +1,32 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Twitter, Linkedin, Github } from 'lucide-react';
+import { API_URL } from '@/core/config';
 
 const Footer = () => {
+  const [counter, setCounter] = useState(0);
+
+  const fetchCounterData = async () => {
+    const url = API_URL + "counters/total/portfolio";
+    const response = await fetch(url);
+    if (!response.ok) {
+      setCounter(0);
+    }
+    const data = await response.json();
+    setCounter(data.counter);
+  };
+
+  const formatViews = (num: number) => {
+    return new Intl.NumberFormat('en', {
+      notation: 'compact',
+      compactDisplay: 'short',
+    }).format(num);
+  };
+
+  useEffect(() => {
+    fetchCounterData();
+  }, []);
+
   const socialLinks = [
     {
       icon: Twitter,
@@ -33,7 +57,7 @@ const Footer = () => {
               Follow our journey and stay updated with the latest tools.
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-6">
             {socialLinks.map((social) => (
               <a
@@ -48,6 +72,11 @@ const Footer = () => {
               </a>
             ))}
           </div>
+          <p className="text-lg sm:text-xl font-bold">
+            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              Loved by +{formatViews(counter)}
+            </span>
+          </p>
         </div>
       </div>
     </footer>
