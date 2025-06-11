@@ -38,8 +38,7 @@ const Hero = () => {
         </h1>
         
         <p className="text-xl text-muted-foreground leading-relaxed">
-          Upload any SVG file and convert it to high-quality PNG with customizable canvas sizes, 
-          colors, and aspect ratios optimized for all major social media platforms.
+          Upload any SVG file and convert it to high-quality PNG optimized for all major social media platforms.
         </p>
         
       </div>
